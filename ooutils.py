@@ -1,5 +1,7 @@
 # OpenOffice utils.
 #
+# Requires Python3
+#
 # Based on code from:
 #   PyODConverter (Python OpenDocument Converter) v1.0.0 - 2008-05-05
 #   Copyright (C) 2008 Mirko Nasato <mirko@artofsolving.com>
@@ -50,7 +52,7 @@ class OORunner:
     def connect(self, no_startup=False):
         """
         Connect to OpenOffice.
-        If a connection cannot be established try to start OpenOffice.
+        If a connection cannot be established, try to start OpenOffice.
         """
         localContext = uno.getComponentContext()
         resolver     = localContext.ServiceManager.createInstanceWithContext("com.sun.star.bridge.UnoUrlResolver", localContext)
@@ -67,9 +69,9 @@ class OORunner:
 
             # If first connect failed then try starting OpenOffice.
             if n == 0:
-            	# Exit loop if startup not desired.
-            	if no_startup:
-            		 break
+                # Exit loop if startup not desired.
+                if no_startup:
+                    break
                 self.startup()
                 did_start = True
 
@@ -78,12 +80,12 @@ class OORunner:
             n += 1
 
         if not context:
-            raise Exception, "Failed to connect to OpenOffice on port %d" % self.port
+            raise Exception("Failed to connect to OpenOffice on port %d" % self.port)
 
         desktop = context.ServiceManager.createInstanceWithContext("com.sun.star.frame.Desktop", context)
 
         if not desktop:
-            raise Exception, "Failed to create OpenOffice desktop on port %d" % self.port
+            raise Exception("Failed to create OpenOffice desktop on port %d" % self.port)
 
         if did_start:
             _started_desktops[self.port] = desktop
@@ -108,11 +110,11 @@ class OORunner:
 
         try:
             pid = os.spawnve(os.P_NOWAIT, args[0], args, env)
-        except Exception, e:
-            raise Exception, "Failed to start OpenOffice on port %d: %s" % (self.port, e.message)
+        except Exception as e:
+            raise Exception("Failed to start OpenOffice on port %d: %s" % (self.port, e.message))
 
         if pid <= 0:
-            raise Exception, "Failed to start OpenOffice on port %d" % self.port
+            raise Exception("Failed to start OpenOffice on port %d" % self.port)
 
 
     def shutdown(self):
@@ -123,7 +125,7 @@ class OORunner:
             if _started_desktops.get(self.port):
                 _started_desktops[self.port].terminate()
                 del _started_desktops[self.port]
-        except Exception, e:
+        except Exception as e:
             pass
 
 
@@ -137,7 +139,7 @@ def _shutdown_desktops():
         try:
             if desktop:
                 desktop.terminate()
-        except Exception, e:
+        except Exception as e:
             pass
 
 
@@ -150,7 +152,7 @@ def oo_shutdown_if_running(port=OPENOFFICE_PORT):
     try:
         desktop = oorunner.connect(no_startup=True)
         desktop.terminate()
-    except Exception, e:
+    except Exception as e:
         pass
 
 
