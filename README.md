@@ -21,23 +21,23 @@ USAGE
 Provide pairs of SPREADSHEET OUTPUT-FILE like this:
 
 ```
-  $ python ssconverter.py file1.xls file1.csv file2.ods file2.csv
+  $ python libreconverter.py file1.xls file1.csv file2.ods file2.csv
 ```
 
 To select a particular sheet, you may append a number or a sheetname to the input filepath using a colon or @ sign:
 
 ```
-  $ python ssconverter.py file1.xls:1      file1.csv
-  $ python ssconverter.py file1.xls:Sheet1 file1.csv
-  $ python ssconverter.py file2.ods@1      file2.csv
-  $ python ssconverter.py file2.ods@Sheet2 file2.csv
+  $ python libreconverter.py file1.xls:1      file1.csv
+  $ python libreconverter.py file1.xls:Sheet1 file1.csv
+  $ python libreconverter.py file2.ods@1      file2.csv
+  $ python libreconverter.py file2.ods@Sheet2 file2.csv
 ```
 
 To convert all the things, use %d or %s -- those will spit out files named by sheet number or by sheet name, respectively:
 
 ```
-  $ python ssconverter.py file1.xls file1-%d.csv
-  $ python ssconverter.py file1.xls file1-%s.csv
+  $ python libreconverter.py file1.xls file1-%d.csv
+  $ python libreconverter.py file1.xls file1-%s.csv
 ```
 
 When using the %d format, you may include zero pad and width specifiers (e.g. %02d).
