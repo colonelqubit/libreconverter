@@ -97,13 +97,11 @@ class LORunner:
         Start a headless instance of LibreOffice.
         """
 
-# --nologo --headless --nofirststartwizard --accept='socket,host=127.0.0.1,port=8100,tcpNoDelay=1;urp
-
         args = [LIBREOFFICE_BIN,
-                '-accept=socket,host=127.0.0.1,port=%d;tcpNoDelay=1;urp' % self.port,
-                '-nofirststartwizard',
-                '-nologo',
-                '-headless',
+                '--accept=socket,host=127.0.0.1,port=%d,tcpNoDelay=1;urp' % self.port,
+                '--nofirststartwizard',
+                '--nologo',
+                '--headless',
                 ]
         env  = {'PATH'       : '/bin:/usr/bin:%s' % LIBREOFFICE_PATH,
                 'PYTHONPATH' : LIBREOFFICE_LIBPATH,
