@@ -15,7 +15,7 @@
 
 import os
 import re
-import oxoutils
+import loutils
 
 import uno
 from com.sun.star.task import ErrorCodeIOException
