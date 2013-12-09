@@ -19,9 +19,8 @@ LIBREOFFICE_PORT = 8100
 
 # Find LibreOffice.
 _lopaths=(
-    ('/usr/lib64/ooo-2.0/program',     '/usr/lib64/ooo-2.0/program'),
-    ('/opt/openoffice.org3/program',   '/opt/openoffice.org/basis3.1/program'),
-)
+    ('/usr/lib/libreoffice/program', '/usr/lib/libreoffice/program')
+    )
 
 for p in _lopaths:
     if os.path.exists(p[0]):
@@ -97,9 +96,11 @@ class LORunner:
         """
         Start a headless instance of LibreOffice.
         """
+
+# --nologo --headless --nofirststartwizard --accept='socket,host=127.0.0.1,port=8100,tcpNoDelay=1;urp
+
         args = [LIBREOFFICE_BIN,
-                '-accept=socket,host=localhost,port=%d;urp;StarOffice.ServiceManager' % self.port,
-                '-norestore',
+                '-accept=socket,host=127.0.0.1,port=%d;tcpNoDelay=1;urp' % self.port,
                 '-nofirststartwizard',
                 '-nologo',
                 '-headless',
@@ -109,6 +110,8 @@ class LORunner:
                 }
 
         try:
+            print("Args, Env: " + str(args) + "||" + str(env))
+
             pid = os.spawnve(os.P_NOWAIT, args[0], args, env)
         except Exception as e:
             raise Exception("Failed to start LibreOffice on port %d: %s" % (self.port, e.message))
@@ -146,7 +149,7 @@ def _shutdown_desktops():
 atexit.register(_shutdown_desktops)
 
 
-def lo_shutdown_if_running(port=LIBREFFICE_PORT):
+def lo_shutdown_if_running(port=LIBREOFFICE_PORT):
     """ Shutdown LibreOffice if it's running on the specified port. """
     lorunner = LORunner(port)
     try:

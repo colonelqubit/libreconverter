@@ -160,7 +160,7 @@ if __name__ == "__main__":
 
         try:
             i = 1
-            converter = SSConverter()
+            converter = LibreConverter()
 
             while i+1 < len(argv):
                 print('%s => %s' % (argv[i], argv[i+1]))
