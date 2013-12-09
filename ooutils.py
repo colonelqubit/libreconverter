@@ -1,4 +1,4 @@
-# OpenOffice utils.
+# LibreOffice utils.
 #
 # Requires Python3
 #
@@ -15,23 +15,23 @@ import time
 import atexit
 
 
-OPENOFFICE_PORT = 8100
+LIBREOFFICE_PORT = 8100
 
-# Find OpenOffice.
-_oopaths=(
+# Find LibreOffice.
+_lopaths=(
     ('/usr/lib64/ooo-2.0/program',     '/usr/lib64/ooo-2.0/program'),
     ('/opt/openoffice.org3/program',   '/opt/openoffice.org/basis3.1/program'),
 )
 
-for p in _oopaths:
+for p in _lopaths:
     if os.path.exists(p[0]):
-        OPENOFFICE_PATH    = p[0]
-        OPENOFFICE_BIN     = os.path.join(OPENOFFICE_PATH, 'soffice')
-        OPENOFFICE_LIBPATH = p[1]
+        LIBREOFFICE_PATH    = p[0]
+        LIBREOFFICE_BIN     = os.path.join(LIBREOFFICE_PATH, 'soffice')
+        LIBREOFFICE_LIBPATH = p[1]
 
         # Add to path so we can find uno.
-        if sys.path.count(OPENOFFICE_LIBPATH) == 0:
-            sys.path.insert(0, OPENOFFICE_LIBPATH)
+        if sys.path.count(LIBREOFFICE_LIBPATH) == 0:
+            sys.path.insert(0, LIBREOFFICE_LIBPATH)
         break
 
 
@@ -40,19 +40,19 @@ from com.sun.star.beans import PropertyValue
 from com.sun.star.connection import NoConnectException
 
 
-class OORunner:
+class LORunner:
     """
-    Start, stop, and connect to OpenOffice.
+    Start, stop, and connect to LibreOffice.
     """
-    def __init__(self, port=OPENOFFICE_PORT):
-        """ Create OORunner that connects on the specified port. """
+    def __init__(self, port=LIBREOFFICE_PORT):
+        """ Create LORunner that connects on the specified port. """
         self.port = port
 
 
     def connect(self, no_startup=False):
         """
-        Connect to OpenOffice.
-        If a connection cannot be established, try to start OpenOffice.
+        Connect to LibreOffice.
+        If a connection cannot be established, try to start LibreOffice.
         """
         localContext = uno.getComponentContext()
         resolver     = localContext.ServiceManager.createInstanceWithContext("com.sun.star.bridge.UnoUrlResolver", localContext)
@@ -67,7 +67,7 @@ class OORunner:
             except NoConnectException:
                 pass
 
-            # If first connect failed then try starting OpenOffice.
+            # If first connect failed then try starting LibreOffice.
             if n == 0:
                 # Exit loop if startup not desired.
                 if no_startup:
@@ -80,12 +80,12 @@ class OORunner:
             n += 1
 
         if not context:
-            raise Exception("Failed to connect to OpenOffice on port %d" % self.port)
+            raise Exception("Failed to connect to LibreOffice on port %d" % self.port)
 
         desktop = context.ServiceManager.createInstanceWithContext("com.sun.star.frame.Desktop", context)
 
         if not desktop:
-            raise Exception("Failed to create OpenOffice desktop on port %d" % self.port)
+            raise Exception("Failed to create LibreOffice desktop on port %d" % self.port)
 
         if did_start:
             _started_desktops[self.port] = desktop
@@ -95,31 +95,31 @@ class OORunner:
 
     def startup(self):
         """
-        Start a headless instance of OpenOffice.
+        Start a headless instance of LibreOffice.
         """
-        args = [OPENOFFICE_BIN,
+        args = [LIBREOFFICE_BIN,
                 '-accept=socket,host=localhost,port=%d;urp;StarOffice.ServiceManager' % self.port,
                 '-norestore',
                 '-nofirststartwizard',
                 '-nologo',
                 '-headless',
                 ]
-        env  = {'PATH'       : '/bin:/usr/bin:%s' % OPENOFFICE_PATH,
-                'PYTHONPATH' : OPENOFFICE_LIBPATH,
+        env  = {'PATH'       : '/bin:/usr/bin:%s' % LIBREOFFICE_PATH,
+                'PYTHONPATH' : LIBREOFFICE_LIBPATH,
                 }
 
         try:
             pid = os.spawnve(os.P_NOWAIT, args[0], args, env)
         except Exception as e:
-            raise Exception("Failed to start OpenOffice on port %d: %s" % (self.port, e.message))
+            raise Exception("Failed to start LibreOffice on port %d: %s" % (self.port, e.message))
 
         if pid <= 0:
-            raise Exception("Failed to start OpenOffice on port %d" % self.port)
+            raise Exception("Failed to start LibreOffice on port %d" % self.port)
 
 
     def shutdown(self):
         """
-        Shutdown OpenOffice.
+        Shutdown LibreOffice.
         """
         try:
             if _started_desktops.get(self.port):
@@ -134,7 +134,7 @@ class OORunner:
 _started_desktops = {}
 
 def _shutdown_desktops():
-    """ Shutdown all OpenOffice desktops that were started by the program. """
+    """ Shutdown all LibreOffice desktops that were started by the program. """
     for port, desktop in _started_desktops.items():
         try:
             if desktop:
@@ -146,19 +146,19 @@ def _shutdown_desktops():
 atexit.register(_shutdown_desktops)
 
 
-def oo_shutdown_if_running(port=OPENOFFICE_PORT):
-    """ Shutdown OpenOffice if it's running on the specified port. """
-    oorunner = OORunner(port)
+def lo_shutdown_if_running(port=LIBREFFICE_PORT):
+    """ Shutdown LibreOffice if it's running on the specified port. """
+    lorunner = LORunner(port)
     try:
-        desktop = oorunner.connect(no_startup=True)
+        desktop = lorunner.connect(no_startup=True)
         desktop.terminate()
     except Exception as e:
         pass
 
 
-def oo_properties(**args):
+def lo_properties(**args):
     """
-    Convert args to OpenOffice property values.
+    Convert args to LibreOffice property values.
     """
     props = []
     for key in args:

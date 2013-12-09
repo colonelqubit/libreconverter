@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 #
 # Requires Python3
 # *Please* make sure to use the version of Python included with
@@ -15,22 +15,22 @@
 
 import os
 import re
-import ooutils
+import oxoutils
 
 import uno
 from com.sun.star.task import ErrorCodeIOException
 
 
 
-class SSConverter:
+class LibreConverter:
     """
     Spreadsheet converter class.
     Converts spreadsheets to CSV files.
     """
 
-    def __init__(self, oorunner=None):
+    def __init__(self, lorunner=None):
         self.desktop  = None
-        self.oorunner = None
+        self.lorunner = None
 
 
     def convert(self, inputFile, outputFile, verbose=False):
@@ -55,10 +55,10 @@ class SSConverter:
 
         # Start openoffice if needed.
         if not self.desktop:
-            if not self.oorunner:
-                self.oorunner = ooutils.OORunner()
+            if not self.lorunner:
+                self.lorunner = loutils.LORunner()
 
-            self.desktop = self.oorunner.connect()
+            self.desktop = self.lorunner.connect()
 
         # Check for sheet specification in input file name.
         match = re.search(r'^(.*)[@:](.*)$', inputFile)
@@ -78,11 +78,11 @@ class SSConverter:
         #   Removing Hidden=True doesn't seem to change anything: nothing appears
         #   on the screen regardless of the Hidden value.
         #
-        # document  = self.desktop.loadComponentFromURL(inputUrl, "_blank", 0, ooutils.oo_properties(Hidden=True))
-        document  = self.desktop.loadComponentFromURL(inputUrl, "_blank", 0, ooutils.oo_properties())
+        # document  = self.desktop.loadComponentFromURL(inputUrl, "_blank", 0, loutils.lo_properties(Hidden=True))
+        document  = self.desktop.loadComponentFromURL(inputUrl, "_blank", 0, loutils.lo_properties())
 
         try:
-            props = ooutils.oo_properties(FilterName="Text - txt - csv (StarCalc)")
+            props = loutils.lo_properties(FilterName="Text - txt - csv (StarCalc)")
             #
             # Another useful property option:
             #   FilterOptions="59,34,0,1"
@@ -149,7 +149,7 @@ if __name__ == "__main__":
     from os.path import isfile
 
     if len(argv) == 2  and  argv[1] == '--shutdown':
-        ooutils.oo_shutdown_if_running()
+        loutils.lo_shutdown_if_running()
     else:
         if len(argv) < 3  or  len(argv) % 2 != 1:
             print("USAGE:")
