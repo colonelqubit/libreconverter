@@ -3,6 +3,10 @@ libreconverter
 
 Convert spreadsheets to CSV text files
 
+The killer feature of this particular script is that it can convert
+multi-sheet spreadsheets into CSV files, either sheet-by-sheet, or all
+sheets at once.
+
 Based on code from
 www.linuxjournal.com/content/convert-spreadsheets-csv-files-python-and-pyuno-part-1v2
 
