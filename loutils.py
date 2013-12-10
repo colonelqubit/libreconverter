@@ -19,7 +19,7 @@ LIBREOFFICE_PORT = 8100
 
 # Find LibreOffice.
 _lopaths=(
-    ('/usr/lib/libreoffice/program', '/usr/lib/libreoffice/program')
+    ('/usr/lib/libreoffice/program', '/usr/lib/libreoffice/program'),
     )
 
 for p in _lopaths:
